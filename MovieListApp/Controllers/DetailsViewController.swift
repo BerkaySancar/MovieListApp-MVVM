@@ -1,19 +1,14 @@
-//
-//  ViewController.swift
-//  MovieListApp
-//
-//  Created by Berkay Sancar on 20.06.2022.
-//
-
 import UIKit
 
-class ViewController: UIViewController {
+final class DetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         // Do any additional setup after loading the view.
     }
+    
 
+   
 
 }
-
