@@ -8,10 +8,19 @@ enum Sections: Int {
 }
 
 final class HomeViewController: UIViewController {
-    
+   
     private var viewModel: APICaller = SplashViewModel()
     
     private let topics = ["Trending", "Top Rated", "Popular", "Upcoming"]
+    private var searchingMovies: [Movie] = []
+    
+    private let search: UISearchController = {
+        let search = UISearchController(searchResultsController: SearchResultsViewController())
+        search.obscuresBackgroundDuringPresentation = false //hide background
+        search.searchBar.placeholder = "Type Movie name here to search"
+        search.searchBar.searchBarStyle = .prominent
+        return search
+    }()
     
     private let homeTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
@@ -28,6 +37,7 @@ final class HomeViewController: UIViewController {
         viewModel.fetchPopularItems()
         viewModel.fetchUpcomingItems()
         viewModel.fetchTopRatedItems()
+       
     }
     
     private func configure() {
@@ -35,14 +45,38 @@ final class HomeViewController: UIViewController {
         view.addSubview(homeTableView)
         homeTableView.delegate = self
         homeTableView.dataSource = self
+        search.searchResultsUpdater = self
+        
+  
         homeTableView.snp.makeConstraints { make in
             make.top.bottom.left.right.equalToSuperview()
         }
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "list.bullet.circle"), style: UIBarButtonItem.Style.done, target: self, action: nil)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle"), style: UIBarButtonItem.Style.done, target: self, action: nil)
+        navigationItem.searchController = search
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "list.bullet.circle"), style: UIBarButtonItem.Style.done, target: self, action: nil)
         navigationController?.navigationBar.tintColor = .label
         navigationController?.navigationBar.topItem?.title = "Movie List App"
+    
+    }
+    
+}
+// MARK: - UISearchResultsUpdating
+extension HomeViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        
+        guard let text = searchController.searchBar.text,
+              text.trimmingCharacters(in: CharacterSet.whitespaces).count >= 1
+                        else {return}
+        
+        guard let resultController = searchController.searchResultsController as? SearchResultsViewController else { return }
+        
+        MovieService.shared.fetchSearchingMovies(with: text) { [weak self] (response) in
+            self?.searchingMovies = response ?? []
+        }
+        resultController.movie = searchingMovies
+        resultController.tableView.reloadData()
+        
     }
 }
 
@@ -58,7 +92,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CollectionViewTableViewCell.identifier, for: indexPath) as? CollectionViewTableViewCell else { return UITableViewCell() }
-        
         
         switch indexPath.section {
         case Sections.TrendingMovies.rawValue:
@@ -76,9 +109,11 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         
         return cell
     }
+    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return topics[section]
     }
+    
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         guard let header = view as? UITableViewHeaderFooterView else { return }
         header.textLabel?.font = .systemFont(ofSize: 12, weight: .bold)

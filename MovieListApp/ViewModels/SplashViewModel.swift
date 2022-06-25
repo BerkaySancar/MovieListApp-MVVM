@@ -11,6 +11,7 @@ protocol APICaller {
     var topRatedMovies: [Movie] { get set }
     var popularMovies : [Movie] { get set }
     var upcomingMovies: [Movie] { get set }
+    var searchingMovies:[Movie] { get set }
     var movieService  : MovieNetworking { get }
     
     var splashScreenOutput: SplashScreenOutput? { get }
@@ -20,13 +21,14 @@ protocol APICaller {
 }
 
 class SplashViewModel: APICaller {
-    
+   
     var splashScreenOutput: SplashScreenOutput?
     
     var trendingMovies: [Movie] = []
     var topRatedMovies: [Movie] = []
     var popularMovies : [Movie] = []
     var upcomingMovies: [Movie] = []
+    var searchingMovies:[Movie] = []
     
     let movieService: MovieNetworking
     

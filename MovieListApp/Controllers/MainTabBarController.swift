@@ -1,13 +1,18 @@
 import UIKit
 
-class MainTabBarController: UITabBarController {
+final class MainTabBarController: UITabBarController {
 
+    private let vc1: UINavigationController = UINavigationController(rootViewController: HomeViewController())
+    private let vc2: UINavigationController = UINavigationController(rootViewController: BookmarksViewController())
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let vc1 = UINavigationController(rootViewController: HomeViewController())
-        let vc2 = UINavigationController(rootViewController: BookmarksViewController())
-        
+        configure()
+      
+    }
+    
+    private func configure() {
         vc1.tabBarItem.image = UIImage(systemName: "house.fill")
         vc2.tabBarItem.image = UIImage(systemName: "bookmark.circle.fill")
         

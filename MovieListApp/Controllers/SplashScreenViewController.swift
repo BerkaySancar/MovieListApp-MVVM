@@ -76,7 +76,7 @@ final class SplashScreenViewController: UIViewController {
             make.left.right.equalToSuperview()
         }
     }
-    
+        
     private func present() {
         
         let vc = MainTabBarController()
@@ -102,6 +102,4 @@ extension SplashScreenViewController: SplashScreenOutput {
     func upcomingData(movies: [Movie]) {
         self.movies = movies
     }
-    
-    
 }

@@ -39,6 +39,7 @@ class MoviesCollectionViewCell: UICollectionViewCell {
         label.textColor = .label
         label.font = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.light)
         label.numberOfLines = 7
+        label.textAlignment = .justified
         return label
     }()
     
@@ -70,19 +71,19 @@ class MoviesCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-//        moviesPosterImage.frame = contentView.bounds
-//        moviesTitle.frame = contentView.bounds
-//        moviesOverview.frame = contentView.bounds
-        
-      
+
+        moviesPosterImage.frame = contentView.bounds
+        moviesTitle.frame = contentView.bounds
+        moviesOverview.frame = contentView.bounds
+        moviesReleaseDate.frame = contentView.bounds
     }
+    
     private func configure() {
         moviesPosterImage.snp.makeConstraints { make in
             make.left.equalTo(contentView.snp.left).offset(16)
         }
         moviesTitle.snp.makeConstraints { make in
-            make.left.equalTo(moviesPosterImage.snp.right).offset(24)
+            make.left.equalTo(moviesPosterImage.snp.right).offset(32)
         }
         moviesOverview.snp.makeConstraints { make in
             make.top.equalTo(moviesTitle.snp.bottom).offset(8)
