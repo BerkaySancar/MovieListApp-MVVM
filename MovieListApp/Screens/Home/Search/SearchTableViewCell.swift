@@ -19,7 +19,7 @@ class SearchTableViewCell: UITableViewCell {
             make.height.equalTo(160)
             make.width.equalTo(100)
         }
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     

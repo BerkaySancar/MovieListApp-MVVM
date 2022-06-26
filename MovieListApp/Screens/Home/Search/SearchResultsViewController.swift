@@ -46,6 +46,7 @@ extension SearchResultsViewController: UITableViewDelegate, UITableViewDataSourc
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.identifier, for: indexPath) as? SearchTableViewCell else {return UITableViewCell()}
         
+        cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
         cell.tintColor = .label
         let name = movie[indexPath.row].original_name ?? movie[indexPath.row].original_title
