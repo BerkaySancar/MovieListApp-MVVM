@@ -1,10 +1,3 @@
-//
-//  MoviesCollectionViewCell.swift
-//  MovieListApp
-//
-//  Created by Berkay Sancar on 22.06.2022.
-//
-
 import UIKit
 import SnapKit
 import Kingfisher

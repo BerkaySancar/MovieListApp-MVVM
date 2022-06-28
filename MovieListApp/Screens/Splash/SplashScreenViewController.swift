@@ -1,7 +1,6 @@
 import UIKit
 import SnapKit
 
-
 protocol SplashScreenOutput {
     
     func trendingData(movies: [Movie])
@@ -46,14 +45,13 @@ final class SplashScreenViewController: UIViewController {
         super.viewDidLoad()
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+1, execute: { self.present() })
-        
+
         configure()
         viewModel.fetchTrendingItems()
         viewModel.fetchTopRatedItems()
         viewModel.fetchPopularItems()
         viewModel.fetchUpcomingItems()
         viewModel.setDelegate(output: self)
-
     }
     
     private func configure() {

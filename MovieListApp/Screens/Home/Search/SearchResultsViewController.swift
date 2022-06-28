@@ -1,16 +1,16 @@
-//
-//  SearchResultsViewController.swift
-//  MovieListApp
-//
-//  Created by Berkay Sancar on 25.06.2022.
-//
-
 import UIKit
 import SnapKit
+
+protocol SearchResultsViewControllerDelegate: AnyObject {
+    
+    func SearchResultsViewControllerDidTapMovie(_ viewModel: DetailViewModel)
+}
 
 class SearchResultsViewController: UIViewController {
     
     public var movie: [Movie] = [Movie]()
+    
+    weak var delegate: SearchResultsViewControllerDelegate?
     
     public let tableView: UITableView = {
         let tableView = UITableView()
@@ -37,6 +37,7 @@ class SearchResultsViewController: UIViewController {
         }
     }
 }
+// MARK: - TABLEVIEW
 extension SearchResultsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -56,5 +57,14 @@ extension SearchResultsViewController: UITableViewDelegate, UITableViewDataSourc
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 160
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let movie = movie[indexPath.row]
+        
+        let viewModel = DetailViewModel(movieName: movie.original_name ?? movie.original_title ?? "", moviePoster: movie.poster_path ?? "", movieVote: movie.vote_average ?? 0.0 , movieOverview: movie.overview ?? "")
+        
+        self.delegate?.SearchResultsViewControllerDidTapMovie(viewModel)
     }
 }

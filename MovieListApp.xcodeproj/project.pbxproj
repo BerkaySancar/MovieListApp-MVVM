@@ -65,9 +65,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B1078A27286B9B9700E08345 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
 		B1593F1828678E50006085DB /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				B1078A27286B9B9700E08345 /* Categories */,
 				B1593F1C28686AEA006085DB /* Splash */,
 				B1593F1D28686B06006085DB /* Home */,
 				B1593F1928678E69006085DB /* Detail */,

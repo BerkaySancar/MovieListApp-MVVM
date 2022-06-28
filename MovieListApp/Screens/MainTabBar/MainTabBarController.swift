@@ -9,7 +9,6 @@ final class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         
         configure()
-      
     }
     
     private func configure() {

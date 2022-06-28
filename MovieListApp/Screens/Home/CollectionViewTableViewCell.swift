@@ -1,10 +1,3 @@
-//
-//  CollectionViewTableViewCell.swift
-//  MovieListApp
-//
-//  Created by Berkay Sancar on 20.06.2022.
-//
-
 import UIKit
 import SnapKit
 

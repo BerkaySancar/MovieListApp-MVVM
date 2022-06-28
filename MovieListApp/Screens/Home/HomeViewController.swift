@@ -8,12 +8,12 @@ enum Sections: Int {
 }
 
 final class HomeViewController: UIViewController {
-   
+    
     private var viewModel: APICaller = SplashViewModel()
     
     private let topics = ["Trending", "Top Rated", "Popular", "Upcoming"]
     private var searchingMovies: [Movie] = []
-    
+        
     private let search: UISearchController = {
         let search = UISearchController(searchResultsController: SearchResultsViewController())
         search.obscuresBackgroundDuringPresentation = false //hide background
@@ -54,33 +54,20 @@ final class HomeViewController: UIViewController {
         
         navigationItem.searchController = search
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "list.bullet.circle"), style: UIBarButtonItem.Style.done, target: self, action: nil)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "list.bullet.circle"), style: UIBarButtonItem.Style.done, target: self, action: #selector(catButtonTapped))
+        
         navigationController?.navigationBar.tintColor = .label
         navigationController?.navigationBar.topItem?.title = "Movie List App"
     
     }
     
-}
-// MARK: - UISearchResultsUpdating
-extension HomeViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        
-        guard let text = searchController.searchBar.text,
-              text.trimmingCharacters(in: CharacterSet.whitespaces).count >= 1
-                        else {return}
-        
-        guard let resultController = searchController.searchResultsController as? SearchResultsViewController else { return }
-        
-        MovieService.shared.fetchSearchingMovies(with: text) { [weak self] (response) in
-            self?.searchingMovies = response ?? []
-        }
-        resultController.movie = searchingMovies
-        resultController.tableView.reloadData()
+    @objc private func catButtonTapped() {
         
     }
+    
 }
 
-// MARK: - TableView
+// MARK: - TABLEVIEW
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -130,7 +117,36 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         return 20
     }
 }
+// MARK: - UISearchResultsUpdating
+extension HomeViewController: UISearchResultsUpdating, SearchResultsViewControllerDelegate {
+  
+    func updateSearchResults(for searchController: UISearchController) {
+        
+        guard let text = searchController.searchBar.text,
+              text.trimmingCharacters(in: CharacterSet.whitespaces).count >= 2  else {return}
+        
+        guard let resultController = searchController.searchResultsController as? SearchResultsViewController else { return }
+        
+        MovieService.shared.fetchSearchingMovies(with: text) { [weak self] (response) in
+            self?.searchingMovies = response ?? []
+        }
+        resultController.movie = searchingMovies
+        resultController.tableView.reloadData()
+        resultController.delegate = self
+    
+    }
+    
+    func SearchResultsViewControllerDidTapMovie(_ viewModel: DetailViewModel) {
+        DispatchQueue.main.async { [weak self] in
+            let vc = DetailsViewController()
+            vc.design(with: viewModel)
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+}
+//MARK: - CELL ITEM --> DETAILSVIEWCONTROLLER
 extension HomeViewController: CollectionViewTableViewCellDelegate {
+    
     func collectionViewTableViewCellDidTapCell(_ cell: CollectionViewTableViewCell, viewModel: DetailViewModel) {
         DispatchQueue.main.async { [weak self] in
             let vc = DetailsViewController()
