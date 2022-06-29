@@ -23,7 +23,6 @@ class SearchResultsViewController: UIViewController {
         super.viewDidLoad()
         
         configure()
-         
     }
     
     private func configure() {

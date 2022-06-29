@@ -60,8 +60,9 @@ final class DetailsViewController: UIViewController {
         view.addSubview(movieOverviewTextView)
         view.addSubview(bookmarksButton)
         configure()
-        if let data = defaults.object(forKey: "bookmark") as? [String] {
-            viewModel.bookmarks = data
+        
+        if let userDefaultsData = defaults.object(forKey: "bookmark") as? [String] {
+            viewModel.bookmarks = userDefaultsData
         }
     }
     

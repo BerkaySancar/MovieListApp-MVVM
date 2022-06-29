@@ -1,6 +1,5 @@
 import Foundation
 
-
 struct DetailViewModel {
     
     public var movieName: String = ""

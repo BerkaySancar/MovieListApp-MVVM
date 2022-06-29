@@ -16,8 +16,6 @@ final class BookmarksViewController: UIViewController {
         return imageView
     }()
     
-   
-    
     private var viewModel: DetailViewModel = DetailViewModel()
 
     override func viewDidLoad() {
@@ -56,7 +54,6 @@ final class BookmarksViewController: UIViewController {
             make.height.equalTo(260)
         }
        
-        
         navigationController?.navigationBar.topItem?.title = "Bookmarks"
         navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.label]
         navigationController?.navigationBar.barTintColor = UIColor.systemBackground
@@ -92,16 +89,5 @@ extension BookmarksViewController: UITableViewDelegate, UITableViewDataSource {
             self.tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
             self.tableView.reloadData()
         }
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = self.tableView.cellForRow(at: indexPath)
-        cell?.accessoryType = .none
-      
-    }
-    
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        let cell = self.tableView.cellForRow(at: indexPath)
-        cell?.accessoryType = .none
     }
 }

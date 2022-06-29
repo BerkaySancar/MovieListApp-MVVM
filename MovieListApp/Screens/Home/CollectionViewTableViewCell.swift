@@ -8,7 +8,6 @@ protocol CollectionViewTableViewCellDelegate: AnyObject {
 
 class CollectionViewTableViewCell: UITableViewCell {
 
-    
     weak var delegate: CollectionViewTableViewCellDelegate?
     
     static let identifier = "CollectionViewTableViewCell"
@@ -48,6 +47,7 @@ class CollectionViewTableViewCell: UITableViewCell {
         
         self.collectionView.frame = contentView.bounds
     }
+    
     public func configure(with movies: [Movie]) {
         self.movies = movies
         DispatchQueue.main.async { [weak self] in
@@ -69,7 +69,7 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
         let title = movies[indexPath.row].original_name ?? movies[indexPath.row].original_title 
         let overview = movies[indexPath.row].overview
         let releaseDate = movies[indexPath.row].release_date
-        
+       
         cell.design(poster: poster, title: title ?? "", overview: overview ?? "", releaseDate: releaseDate ?? "")
         
         return cell

@@ -1,22 +1,21 @@
 import UIKit
 import SnapKit
-import Kingfisher
 
-class SearchTableViewCell: UITableViewCell {
+class CategoriesTableViewCell: UITableViewCell {
 
-    static let identifier: String = "SearchTableViewCell"
+    static let identifier: String = "CategoriesTableViewCell"
     
-    private let searchedMoviePoster: UIImageView = {
+    private let moviePoster: UIImageView = {
         let imageView = UIImageView()
         imageView.snp.makeConstraints { make in
-            make.height.equalTo(160)
+            make.height.equalTo(120)
             make.width.equalTo(100)
         }
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
-    private let searchedMovieName: UILabel = {
+    private let movieName: UILabel = {
         let label = UILabel()
         label.textColor = .label
         label.font = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.bold)
@@ -27,8 +26,8 @@ class SearchTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        contentView.addSubview(searchedMoviePoster)
-        contentView.addSubview(searchedMovieName)
+        contentView.addSubview(moviePoster)
+        contentView.addSubview(movieName)
         configure()
     }
     
@@ -38,22 +37,21 @@ class SearchTableViewCell: UITableViewCell {
     
     private func configure() {
         
-        searchedMoviePoster.snp.makeConstraints { make in
+        moviePoster.snp.makeConstraints { make in
             make.left.equalToSuperview()
             make.top.equalToSuperview()
             
         }
-        searchedMovieName.snp.makeConstraints { make in
-            make.left.equalTo(searchedMoviePoster.snp.right).offset(16)
+        movieName.snp.makeConstraints { make in
+            make.left.equalTo(moviePoster.snp.right).offset(16)
             make.right.equalToSuperview().offset(-20)
             make.centerY.equalToSuperview()
-
         }
     }
     public func design(name: String, poster: String) {
         
         guard let url = URL(string: "https://image.tmdb.org/t/p/w500/\(poster)") else {return}
-        searchedMoviePoster.kf.setImage(with: url)
-        searchedMovieName.text = name
+        moviePoster.kf.setImage(with: url)
+        movieName.text = name
     }
 }
