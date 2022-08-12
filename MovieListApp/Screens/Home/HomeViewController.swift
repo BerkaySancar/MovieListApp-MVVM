@@ -1,5 +1,13 @@
 import UIKit
 
+protocol HomeViewControllerOutput {
+    
+    func trendingData(movies: [Movie])
+    func popularData(movies: [Movie])
+    func topRatedData(movies: [Movie])
+    func upcomingData(movies: [Movie])
+}
+
 enum Sections: Int {
     case TrendingMovies = 0
     case TopRatedMovies = 1
@@ -8,12 +16,7 @@ enum Sections: Int {
 }
 
 final class HomeViewController: UIViewController {
-    
-    private var viewModel: APICaller = SplashViewModel()
-    private var searchingMovies: [Movie] = []
-    
-    private let topics = ["Trending", "Top Rated", "Popular", "Upcoming"]
-    
+ 
     private let search: UISearchController = {
         let search = UISearchController(searchResultsController: SearchResultsViewController())
         search.obscuresBackgroundDuringPresentation = false //hide background
@@ -28,16 +31,27 @@ final class HomeViewController: UIViewController {
         tableView.backgroundColor = .systemBackground
         return tableView
     }()
-   
+    
+    private var movies: [Movie] = [Movie]()
+    private var topRated: [Movie] = [Movie]()
+    private var popular: [Movie] = [Movie]()
+    private var upcoming: [Movie] = [Movie]()
+    private var trending: [Movie] = [Movie]()
+    private var searchingMovies: [Movie] = [Movie]()
+    private let topics = ["Trending", "Top Rated", "Popular", "Upcoming"]
+    
+    lazy var viewModel: HomeViewModelDelegate = HomeViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configure()
+        
+        viewModel.setDelegate(output: self)
         viewModel.fetchTrendingItems()
-        viewModel.fetchPopularItems()
-        viewModel.fetchUpcomingItems()
-        viewModel.fetchTopRatedItems()
+        viewModel.fetchCategoryMovies()
     }
+   
     private func configure() {
         view.backgroundColor = .systemBackground
         view.addSubview(homeTableView)
@@ -51,97 +65,9 @@ final class HomeViewController: UIViewController {
         navigationItem.searchController = search
         navigationController?.navigationBar.tintColor = .label
         navigationController?.navigationBar.topItem?.title = "Movie List App"
-        
-        categoriesButtonTapped()
-    }
-// MARK: - CATEGORY OPERATIONS
-    private func categoriesButtonTapped() {
-        var selectedID: Int = 0
-        
-        let action = UIAction(title: "Action") { (action) in //28
-            selectedID = 28
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let adventure = UIAction(title: "Adventure") { (action) in //12
-            selectedID = 12
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let animation = UIAction(title: "Animation") { (action) in //16
-            selectedID = 16
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let comedy = UIAction(title: "Comedy") { (action) in //35
-            selectedID = 35
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let crime = UIAction(title: "Crime") { (action) in //80
-            selectedID = 80
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let documentary = UIAction(title: "Documentary") { (action) in //99
-            selectedID = 99
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let drama = UIAction(title: "Drama") { (action) in //18
-            selectedID = 18
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let family = UIAction(title: "Family") { (action) in //10751
-            selectedID = 10751
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let fantasy = UIAction(title: "Fantasy") { (action) in //14
-            selectedID = 14
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let history = UIAction(title: "History") { (action) in //36
-            selectedID = 36
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let horror = UIAction(title: "Horror") { (action) in //27
-            selectedID = 27
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let music = UIAction(title: "Music") { (action) in //10402
-            selectedID = 10402
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let mystery = UIAction(title: "Mystery") { (action) in //9648
-            selectedID = 9648
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let romance = UIAction(title: "Romance") { (action) in //10749
-            selectedID = 10749
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let scienceFiction = UIAction(title: "Science Fiction") { (action) in //878
-            selectedID = 878
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let thriller = UIAction(title: "Thriller") { (action) in //53
-            selectedID = 53
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let war = UIAction(title: "War") { (action) in //10752
-            selectedID = 10752
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let western = UIAction(title: "Western") { (action) in //37
-            selectedID = 37
-            self.present(CategoriesViewController(genreID: selectedID), animated: true)
-        }
-        let menu = UIMenu(title: "Categories", options: .displayInline, children: [action, adventure, animation,
-                                                                                   comedy, crime, documentary,
-                                                                                   drama, family, fantasy,
-                                                                                   history, horror, music,
-                                                                                   mystery, romance, scienceFiction,
-                                                                                   thriller, war, western])
-        
-        let navItems = [UIBarButtonItem(image:  UIImage(systemName: "list.bullet.circle"), menu: menu)]
-        self.navigationItem.rightBarButtonItems = navItems
     }
 }
-// MARK: - TABLEVIEW
+// MARK: -  HOME TABLEVIEW
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -156,13 +82,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch indexPath.section {
         case Sections.TrendingMovies.rawValue:
-            cell.configure(with: viewModel.trendingMovies)
+            cell.configure(with: trending)
         case Sections.TopRatedMovies.rawValue:
-            cell.configure(with: viewModel.topRatedMovies)
+            cell.configure(with: topRated)
         case Sections.PopularMovies.rawValue:
-            cell.configure(with: viewModel.popularMovies)
+            cell.configure(with: popular)
         case Sections.UpcomingMovies.rawValue:
-            cell.configure(with: viewModel.upcomingMovies)
+            cell.configure(with: upcoming)
         default:
             return UITableViewCell()
         }
@@ -194,14 +120,14 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
 extension HomeViewController: UISearchResultsUpdating, SearchResultsViewControllerDelegate {
   
     func updateSearchResults(for searchController: UISearchController) {
-        guard let text = searchController.searchBar.text,
-              text.trimmingCharacters(in: CharacterSet.whitespaces).count >= 2  else {return}
-        
         guard let resultController = searchController.searchResultsController as? SearchResultsViewController else { return }
         
-        MovieService.shared.fetchSearchingMovies(with: text) { [weak self] (response) in
-            self?.searchingMovies = response ?? []
+        viewModel.movieService.fetchSearchingMovies(with: searchController.searchBar.text!) { [weak self] (response) in
+            self?.searchingMovies = response?.results ?? []
+        } failure: { error in
+            print(error)
         }
+
         resultController.movie = searchingMovies
         resultController.tableView.reloadData()
         resultController.delegate = self
@@ -213,6 +139,22 @@ extension HomeViewController: UISearchResultsUpdating, SearchResultsViewControll
             vc.design(with: viewModel)
             self?.navigationController?.pushViewController(vc, animated: true)
         }
+    }
+}
+extension HomeViewController: HomeViewControllerOutput {
+    
+    func upcomingData(movies: [Movie]) {
+        upcoming = movies
+        self.homeTableView.reloadData()
+    }
+    func popularData(movies: [Movie]) {
+        popular = movies
+    }
+    func topRatedData(movies: [Movie]) {
+        topRated = movies
+    }
+    func trendingData(movies: [Movie]) {
+        trending = movies
     }
 }
 //MARK: - CELL ITEM --> DETAILSVIEWCONTROLLER

@@ -1,20 +1,8 @@
 import UIKit
 import SnapKit
 
-protocol SplashScreenOutput {
-    
-    func trendingData(movies: [Movie])
-    func topRatedData(movies: [Movie])
-    func popularData(movies: [Movie])
-    func upcomingData(movies: [Movie])
-}
-
 final class SplashScreenViewController: UIViewController {
-    
-    private var movies: [Movie] = []
-    
-    var viewModel: APICaller = SplashViewModel()
-    
+
     private let activityIndicatorView = UIActivityIndicatorView(style: .medium)
     
     private let logoImage: UIImageView = {
@@ -47,13 +35,8 @@ final class SplashScreenViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+1, execute: { self.present() })
 
         configure()
-        viewModel.fetchTrendingItems()
-        viewModel.fetchTopRatedItems()
-        viewModel.fetchPopularItems()
-        viewModel.fetchUpcomingItems()
-        viewModel.setDelegate(output: self)
     }
-    
+        
     private func configure() {
         
         view.backgroundColor = .systemBackground
@@ -84,20 +67,3 @@ final class SplashScreenViewController: UIViewController {
     }
 }
 
-extension SplashScreenViewController: SplashScreenOutput {
-    func trendingData(movies: [Movie]) {
-        self.movies = movies
-    }
-    
-    func topRatedData(movies: [Movie]) {
-        self.movies = movies
-    }
-    
-    func popularData(movies: [Movie]) {
-        self.movies = movies
-    }
-    
-    func upcomingData(movies: [Movie]) {
-        self.movies = movies
-    }
-}

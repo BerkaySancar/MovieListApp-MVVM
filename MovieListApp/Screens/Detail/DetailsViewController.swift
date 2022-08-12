@@ -42,6 +42,7 @@ final class DetailsViewController: UIViewController {
         let button = UIButton()
         button.tintColor = .label
         button.setBackgroundImage(UIImage(systemName: "bookmark.circle"), for: UIControl.State.normal)
+        button.setBackgroundImage(UIImage(systemName: "bookmark.circle.fill"), for: UIControl.State.selected)
         button.snp.makeConstraints { make in
             make.width.height.equalTo(36)
         }
@@ -106,6 +107,7 @@ final class DetailsViewController: UIViewController {
         movieNameLabel.text = model.movieName
         movieOverviewTextView.text = model.movieOverview
         movieVoteAverage.text = String(model.movieVote) + " / 10"
+        
 
     }
     
@@ -123,7 +125,6 @@ final class DetailsViewController: UIViewController {
             let okButton = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil)
             alert.addAction(okButton)
             self.present(alert, animated: true, completion: nil)
-            bookmarksButton.tintColor = .systemYellow
         } 
     }
 }

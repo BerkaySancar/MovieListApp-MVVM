@@ -2,8 +2,8 @@ import UIKit
 
 final class MainTabBarController: UITabBarController {
 
-    private let vc1: UINavigationController = UINavigationController(rootViewController: HomeViewController())
-    private let vc2: UINavigationController = UINavigationController(rootViewController: BookmarksViewController())
+    private let homeViewController: UINavigationController = UINavigationController(rootViewController: HomeViewController())
+    private let bookmarksViewController: UINavigationController = UINavigationController(rootViewController: BookmarksViewController())
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -12,14 +12,14 @@ final class MainTabBarController: UITabBarController {
     }
     
     private func configure() {
-        vc1.tabBarItem.image = UIImage(systemName: "house.fill")
-        vc2.tabBarItem.image = UIImage(systemName: "bookmark.circle.fill")
+        homeViewController.tabBarItem.image = UIImage(systemName: "house.fill")
+        bookmarksViewController.tabBarItem.image = UIImage(systemName: "bookmark.circle.fill")
         
-        vc1.title = "Home"
-        vc2.title = "Bookmarks"
+        homeViewController.title = "Home"
+        bookmarksViewController.title = "Bookmarks"
         
         tabBar.tintColor = .label
         tabBar.backgroundColor = .systemBackground
-        setViewControllers([vc1,vc2], animated: true)
+        setViewControllers([homeViewController,bookmarksViewController], animated: true)
     }
 }
